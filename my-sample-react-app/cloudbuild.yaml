@@ -33,6 +33,7 @@ steps:
   #    Using tool sed inside ubuntu image
   - name: 'ubuntu'
     id: Prepare Manifest
+    dir: '${_PROJECT_DIR}'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -43,6 +44,7 @@ steps:
   # 4. Deploy to GKE
   - name: 'gcr.io/cloud-builders/kubectl'
     id: Deploy
+    dir: '${_PROJECT_DIR}'
     args: ['apply', '-f', 'k8s/']
     env:
       - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_CLUSTER_ZONE}' # Replace to your GKE zone
