@@ -1,5 +1,5 @@
-variables:
-  # Define any variables if needed
+substitutions:
+  # Define any subtitution variables if needed
   _GKE_CLUSTER_NAME: 'my-sample-gke-cluster'  # Replace with your GKE cluster name
   _GKE_CLUSTER_ZONE: 'asia-southeast2-a'        # Replace with your GKE cluster zone
   _PROJECT_ID: 'our-hull-385315'              # Replace with your GCP Project ID
