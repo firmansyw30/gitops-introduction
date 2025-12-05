@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: react-app
+  name: my-sample-react-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: react-app
+      app: my-sample-react-app
   template:
     metadata:
       labels:
-        app: react-app
+        app: my-sample-react-app
     spec:
       containers:
-      - name: react-container
-        image: asia-southeast2-docker.pkg.dev/PROJECT_ID/my-repo/react-app:latest
+      - name: my-sample-react-container
+        image: asia-southeast2-docker.pkg.dev/our-hull-385315/my-sample-react-app-repo/my-sample-react-app:${IMAGE_TAG}
         ports:
         - containerPort: 80

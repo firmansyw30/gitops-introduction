@@ -1,18 +1,47 @@
+variables:
+  # Define any variables if needed
+  _GKE_CLUSTER_NAME: 'my-sample-gke-cluster'  # Replace with your GKE cluster name
+  _GKE_CLUSTER_ZONE: 'asia-southeast2-a'        # Replace with your GKE cluster zone
+  _PROJECT_ID: 'our-hull-385315'              # Replace with your GCP Project ID
+  _ARTIFACT_REGISTRY_REPO: 'my-sample-react-app-repo'  # Replace with your Artifact Registry repository name
+  _REGION: 'asia-southeast2'               # Replace with your Artifact Registry region
+  _APP_NAME: 'my-sample-react-app'                # Replace with your Application name
+
 steps:
-  # 1. Build Docker Image
+  # 1. Build Image using tag commit
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/my-repo/react-app:latest', '.']
+    id: Build
+    args:
+      - 'build'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
+      - '.'
 
-  # 2. Push Image ke Artifact Registry
+  # 2. Push Image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/my-repo/react-app:latest']
+    id: Push
+    args:
+      - 'push'
+      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
 
-  # 3. Deploy ke GKE menggunakan kubectl
+  # 3. Manipulate manifest, replace ${IMAGE_TAG} with actual SHA
+  #    Using tool sed inside ubuntu image
+  - name: 'ubuntu'
+    id: Prepare Manifest
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        sed -i "s/\${IMAGE_TAG}/$SHORT_SHA/g" k8s/deployment.yaml
+        cat k8s/deployment.yaml 
+
+  # 4. Deploy to GKE
   - name: 'gcr.io/cloud-builders/kubectl'
+    id: Deploy
     args: ['apply', '-f', 'k8s/']
     env:
-      - 'CLOUDSDK_COMPUTE_ZONE=asia-southeast2-a'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=gke-cluster-anda'
+      - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_CLUSTER_ZONE}' # Replace to your GKE zone
+      - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER_NAME}' # Replace to your GKE cluster name
 
 images:
-  - 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/my-repo/react-app:latest'
+  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'

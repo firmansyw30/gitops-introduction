@@ -14,3 +14,4 @@ my-sample-react-app/node_modules/
 # Other
 .DS_Store
 *.log
+infrastructure/*.json
