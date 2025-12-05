@@ -1,5 +1,6 @@
 substitutions:
   # Define any subtitution variables if needed
+  _ARTIFACT_REGISTRY_HOSTNAME: 'asia-southeast2-docker.pkg.dev'
   _GKE_CLUSTER_NAME: 'my-sample-gke-cluster'  # Replace with your GKE cluster name
   _GKE_CLUSTER_ZONE: 'asia-southeast2-a'        # Replace with your GKE cluster zone
   _PROJECT_ID: 'our-hull-385315'              # Replace with your GCP Project ID
@@ -14,7 +15,7 @@ steps:
     args:
       - 'build'
       - '-t'
-      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
+      - '${_ARTIFACT_REGISTRY_HOSTNAME}/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
       - '.'
 
   # 2. Push Image to Artifact Registry
@@ -22,7 +23,7 @@ steps:
     id: Push
     args:
       - 'push'
-      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
+      - '${_ARTIFACT_REGISTRY_HOSTNAME}/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
 
   # 3. Manipulate manifest, replace ${IMAGE_TAG} with actual SHA
   #    Using tool sed inside ubuntu image
@@ -44,4 +45,7 @@ steps:
       - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER_NAME}' # Replace to your GKE cluster name
 
 images:
-  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
+  - '${_ARTIFACT_REGISTRY_HOSTNAME}/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
