@@ -1,8 +1,16 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # Terraform files
 infrastructure/terraform.tfstate
 infrastructure/terraform.tfstate.backup
-infrastructure/.terraform/.terraform.lock.hcl
+infrastructure/.terraform/
 infrastructure/.terraform.lock.hcl
 infrastructure/*.json
+!infrastructure/our-hull-385315-70c503b0d0bb.json
+infrastructure/*.tfvars
+!infrastructure/terraform.tfvars.example
+
+# Node modules
+my-sample-react-app/node_modules/
+
+# Other
+.DS_Store
+*.log
