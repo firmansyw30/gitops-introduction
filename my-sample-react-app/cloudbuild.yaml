@@ -38,14 +38,14 @@ steps:
     args:
       - '-c'
       - |
-        sed -i "s/\$${IMAGE_TAG}/$SHORT_SHA/g" k8s/deployment.yaml
-        cat k8s/deployment.yaml 
+        sed -i "s/\$${IMAGE_TAG}/$SHORT_SHA/g" k8s-manifest/deployment.yaml
+        cat k8s-manifest/deployment.yaml 
 
   # 4. Deploy to GKE
   - name: 'gcr.io/cloud-builders/kubectl'
     id: Deploy
     dir: '${_PROJECT_DIR}'
-    args: ['apply', '-f', 'k8s/']
+    args: ['apply', '-f', 'k8s-manifest/'] 
     env:
       - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_CLUSTER_ZONE}' # Replace to your GKE zone
       - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER_NAME}' # Replace to your GKE cluster name
