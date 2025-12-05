@@ -33,7 +33,7 @@ steps:
     args:
       - '-c'
       - |
-        sed -i "s/\${IMAGE_TAG}/$SHORT_SHA/g" k8s/deployment.yaml
+        sed -i "s/\$${IMAGE_TAG}/$SHORT_SHA/g" k8s/deployment.yaml
         cat k8s/deployment.yaml 
 
   # 4. Deploy to GKE
