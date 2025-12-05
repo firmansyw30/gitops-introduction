@@ -16,6 +16,8 @@ steps:
       - 'build'
       - '-t'
       - '${_ARTIFACT_REGISTRY_HOSTNAME}/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
+      - '-f'
+      - 'Containerfile'
       - '.'
 
   # 2. Push Image to Artifact Registry
