@@ -1,0 +1,42 @@
+# Basic Variables
+project_id = ""
+region     = ""
+zone       = ""
+
+# VPC
+network_name                     = ""
+auto_create_subnetworks          = false
+enable_ula_internal_ipv6         = true
+subnetwork_name                  = ""
+subnetwork_ip_cidr_range         = ""
+stack_type                       = ""
+ipv6_access_type                 = ""
+services_secondary_ip_range_name = ""
+pod_secondary_ip_range_name      = ""
+services_secondary_ip_range      = ""
+pod_secondary_ip_range           = ""
+
+# Artifact Registry
+repository_id          = ""
+repository_format      = ""
+repository_description = ""
+
+# IAM Service Account
+service_account_email = ""
+
+# GKE Cluster
+cluster_name    = ""
+networking_mode = ""
+cluster_version = ""
+
+# Container Node Pool
+node_pool_name              = ""
+initial_node_count          = 0
+remove_default_node_pool    = true
+node_count                  = 1
+node_spot                   = true
+node_disk_size              = 10
+node_disk_type              = "pd-standard"
+node_machine_type           = ""
+cluster_deletion_protection = false
+
