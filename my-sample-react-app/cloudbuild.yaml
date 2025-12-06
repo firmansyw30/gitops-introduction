@@ -7,48 +7,35 @@ substitutions:
   _ARTIFACT_REGISTRY_REPO: 'my-sample-react-app-repo'  # Replace with your Artifact Registry repository name
   _REGION: 'asia-southeast2'               # Replace with your Artifact Registry region
   _APP_NAME: 'my-sample-react-app'                # Replace with your Application name
-  _PROJECT_DIR: 'my-sample-react-app'
+  _PROJECT_DIR: 'my-sample-react-app' # Replace with your project directory if needed
 
 steps:
-  # 1. Build Image using tag commit
-  - name: 'gcr.io/cloud-builders/docker'
-    id: Build
+  - name: 'gcr.io/kaniko-project/executor:latest' #For caching building image, using kaniko project
+    id: Build-Push
     dir: '${_PROJECT_DIR}'
     args:
-      - 'build'
-      - '-t'
-      - '${_ARTIFACT_REGISTRY_HOSTNAME}/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
-      - '-f'
-      - 'Containerfile'
-      - '.'
-
-  # 2. Push Image to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    id: Push
-    args:
-      - 'push'
-      - '${_ARTIFACT_REGISTRY_HOSTNAME}/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
-
-  # # 3. Manipulate manifest, replace ${IMAGE_TAG} with actual SHA
-  # #    Using tool sed inside ubuntu image
-  # - name: 'ubuntu'
-  #   id: Prepare Manifest
+      - '--destination=${_ARTIFACT_REGISTRY_HOSTNAME}/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
+      - '--dockerfile=Containerfile'
+      - '--cache=true'
+      - '--context=dir://.'
+  # # 1. Build Image using tag commit
+  # - name: 'gcr.io/cloud-builders/docker'
+  #   id: Build
   #   dir: '${_PROJECT_DIR}'
-  #   entrypoint: 'bash'
   #   args:
-  #     - '-c'
-  #     - |
-  #       sed -i "s/\$${IMAGE_TAG}/$SHORT_SHA/g" k8s-manifest/deployment.yaml
-  #       cat k8s-manifest/deployment.yaml 
+  #     - 'build'
+  #     - '-t'
+  #     - '${_ARTIFACT_REGISTRY_HOSTNAME}/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
+  #     - '-f'
+  #     - 'Containerfile'
+  #     - '.'
 
-  # # 4. Deploy to GKE
-  # - name: 'gcr.io/cloud-builders/kubectl'
-  #   id: Deploy
-  #   dir: '${_PROJECT_DIR}'
-  #   args: ['apply', '-f', 'k8s-manifest/'] 
-  #   env:
-  #     - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_CLUSTER_ZONE}' # Replace to your GKE zone
-  #     - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER_NAME}' # Replace to your GKE cluster name
+  # # 2. Push Image to Artifact Registry
+  # - name: 'gcr.io/cloud-builders/docker'
+  #   id: Push
+  #   args:
+  #     - 'push'
+  #     - '${_ARTIFACT_REGISTRY_HOSTNAME}/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
 
 images:
   - '${_ARTIFACT_REGISTRY_HOSTNAME}/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
