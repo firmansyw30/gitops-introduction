@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: react-app-gitops
+  namespace: argocd
+spec:
+  project: default
+  source:
+    # Ganti dengan URL GitHub repo Anda
+    repoURL: https://github.com/firmansyw30/gitops-introduction.git
+    # Ganti dengan branch yang Anda pakai (misal: main)
+    targetRevision: main
+    # Folder tempat file deployment.yaml & service.yaml berada
+    path: k8s-manifest 
+  destination:
+    # Ini artinya deploy ke cluster tempat ArgoCD berada
+    server: https://kubernetes.default.svc
+    # Namespace tujuan aplikasi React (bisa 'default' atau buat baru)
+    namespace: default
+  # Fitur GitOps Sakti: Self-Healing & Auto-Sync
+  syncPolicy:
+    automated:
+      prune: true      # Hapus resource di k8s jika file di git dihapus
+      selfHeal: true   # Jika ada yang edit manual di k8s, kembalikan seperti di git

@@ -1,6 +1,6 @@
 substitutions:
   # Define any subtitution variables if needed
-  _ARTIFACT_REGISTRY_HOSTNAME: 'asia-southeast2-docker.pkg.dev'
+  _ARTIFACT_REGISTRY_HOSTNAME: 'asia-southeast2-docker.pkg.dev' # Replace with your Artifact Registry hostname
   _GKE_CLUSTER_NAME: 'my-sample-gke-cluster'  # Replace with your GKE cluster name
   _GKE_CLUSTER_ZONE: 'asia-southeast2-a'        # Replace with your GKE cluster zone
   _PROJECT_ID: 'our-hull-385315'              # Replace with your GCP Project ID
@@ -29,26 +29,26 @@ steps:
       - 'push'
       - '${_ARTIFACT_REGISTRY_HOSTNAME}/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
 
-  # 3. Manipulate manifest, replace ${IMAGE_TAG} with actual SHA
-  #    Using tool sed inside ubuntu image
-  - name: 'ubuntu'
-    id: Prepare Manifest
-    dir: '${_PROJECT_DIR}'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        sed -i "s/\$${IMAGE_TAG}/$SHORT_SHA/g" k8s-manifest/deployment.yaml
-        cat k8s-manifest/deployment.yaml 
+  # # 3. Manipulate manifest, replace ${IMAGE_TAG} with actual SHA
+  # #    Using tool sed inside ubuntu image
+  # - name: 'ubuntu'
+  #   id: Prepare Manifest
+  #   dir: '${_PROJECT_DIR}'
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - |
+  #       sed -i "s/\$${IMAGE_TAG}/$SHORT_SHA/g" k8s-manifest/deployment.yaml
+  #       cat k8s-manifest/deployment.yaml 
 
-  # 4. Deploy to GKE
-  - name: 'gcr.io/cloud-builders/kubectl'
-    id: Deploy
-    dir: '${_PROJECT_DIR}'
-    args: ['apply', '-f', 'k8s-manifest/'] 
-    env:
-      - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_CLUSTER_ZONE}' # Replace to your GKE zone
-      - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER_NAME}' # Replace to your GKE cluster name
+  # # 4. Deploy to GKE
+  # - name: 'gcr.io/cloud-builders/kubectl'
+  #   id: Deploy
+  #   dir: '${_PROJECT_DIR}'
+  #   args: ['apply', '-f', 'k8s-manifest/'] 
+  #   env:
+  #     - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_CLUSTER_ZONE}' # Replace to your GKE zone
+  #     - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER_NAME}' # Replace to your GKE cluster name
 
 images:
   - '${_ARTIFACT_REGISTRY_HOSTNAME}/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
