@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: my-sample-react-container
-        image: asia-southeast2-docker.pkg.dev/our-hull-385315/my-sample-react-app-repo/my-sample-react-app:latest
+        image: asia-southeast2-docker.pkg.dev/our-hull-385315/my-sample-react-app-repo/my-sample-react-app:526005e55444
         ports:
         - containerPort: 80
         resources:
