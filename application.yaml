@@ -3,6 +3,15 @@ kind: Application
 metadata:
   name: my-sample-react-app-gitops
   namespace: argocd
+  annotations:
+      # List of images to be monitored and updated by ArgoCD Image Updater
+      argocd-image-updater.argoproj.io/image-list: my-react-app=asia-southeast2-docker.pkg.dev/our-hull-385315/my-sample-react-app-repo/my-sample-react-app
+      
+      # Update strategy: latest tag
+      argocd-image-updater.argoproj.io/my-react-app.update-strategy: latest
+
+      # Write back method: git with SSH using secret stored in ArgoCD
+      argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/git-creds
 spec:
   project: default
   source:
