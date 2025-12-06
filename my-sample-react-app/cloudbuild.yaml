@@ -10,35 +10,35 @@ substitutions:
   _PROJECT_DIR: 'my-sample-react-app' # Replace with your project directory if needed
 
 steps:
-  - name: 'gcr.io/kaniko-project/executor:latest' #For caching building image, using kaniko project
-    id: Build-Push
-    dir: '${_PROJECT_DIR}'
-    args:
-      - '--destination=${_ARTIFACT_REGISTRY_HOSTNAME}/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
-      - '--dockerfile=Containerfile'
-      - '--cache=true'
-      - '--context=dir://.'
-  # # 1. Build Image using tag commit
-  # - name: 'gcr.io/cloud-builders/docker'
-  #   id: Build
+  # - name: 'gcr.io/kaniko-project/executor:latest' #For caching building image, using kaniko project
+  #   id: Build-Push
   #   dir: '${_PROJECT_DIR}'
   #   args:
-  #     - 'build'
-  #     - '-t'
-  #     - '${_ARTIFACT_REGISTRY_HOSTNAME}/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
-  #     - '-f'
-  #     - 'Containerfile'
-  #     - '.'
+  #     - '--destination=${_ARTIFACT_REGISTRY_HOSTNAME}/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
+  #     - '--dockerfile=Containerfile'
+  #     - '--cache=true'
+  #     - '--context=dir://.'
+  # 1. Build Image using tag commit
+  - name: 'gcr.io/cloud-builders/docker'
+    id: Build
+    dir: '${_PROJECT_DIR}'
+    args:
+      - 'build'
+      - '-t'
+      - '${_ARTIFACT_REGISTRY_HOSTNAME}/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
+      - '-f'
+      - 'Containerfile'
+      - '.'
 
-  # # 2. Push Image to Artifact Registry
-  # - name: 'gcr.io/cloud-builders/docker'
-  #   id: Push
-  #   args:
-  #     - 'push'
-  #     - '${_ARTIFACT_REGISTRY_HOSTNAME}/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
+  # 2. Push Image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: Push
+    args:
+      - 'push'
+      - '${_ARTIFACT_REGISTRY_HOSTNAME}/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
 
-# images:
-#   - '${_ARTIFACT_REGISTRY_HOSTNAME}/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
+images:
+  - '${_ARTIFACT_REGISTRY_HOSTNAME}/$PROJECT_ID/${_ARTIFACT_REGISTRY_REPO}/${_APP_NAME}:$SHORT_SHA'
 
 options:
   logging: CLOUD_LOGGING_ONLY
