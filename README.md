@@ -132,6 +132,7 @@ Every push to github will automatically invoke Cloud Build, and Cloud build will
 
     ```bash
     cd my-sample-react-app
+    npm install
     npm start
     ```
 
